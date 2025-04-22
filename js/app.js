@@ -490,3 +490,78 @@ document.addEventListener('DOMContentLoaded', function() {
         updateMindMap('slums', 'Slums', 50, 50);
     }, 1000);
 });
+// Make the toggle buttons work
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the toggle buttons and panels
+    const hudButton = document.querySelector('.toggle-btn[data-view="hud"]');
+    const mindMapButton = document.querySelector('.toggle-btn[data-view="mindmap"]');
+    const hudPanel = document.querySelector('.side-panel[data-panel="hud"]');
+    const mindMapPanel = document.querySelector('.side-panel[data-panel="mindmap"]');
+    
+    // Set up event listeners for the toggle buttons
+    if (hudButton && mindMapButton) {
+        hudButton.addEventListener('click', function() {
+            // Activate HUD button
+            hudButton.classList.add('active');
+            mindMapButton.classList.remove('active');
+            
+            // Show HUD panel, hide Mind Map panel
+            hudPanel.classList.remove('hidden');
+            mindMapPanel.classList.add('hidden');
+        });
+        
+        mindMapButton.addEventListener('click', function() {
+            // Activate Mind Map button
+            mindMapButton.classList.add('active');
+            hudButton.classList.remove('active');
+            
+            // Show Mind Map panel, hide HUD panel
+            mindMapPanel.classList.remove('hidden');
+            hudPanel.classList.add('hidden');
+            
+            // Add the example Slums node if not already present
+            if (!document.querySelector('.mindmap-node')) {
+                updateMindMap('slums', 'Slums', 50, 50);
+            }
+        });
+    }
+});
+
+// Add the updateMindMap function if it doesn't exist yet
+function updateMindMap(locationId, locationName, x, y) {
+    const mindmapContainer = document.querySelector('.mindmap-placeholder');
+    
+    if (!mindmapContainer) return;
+    
+    // Check if node already exists
+    let node = document.querySelector(`.mindmap-node[data-location="${locationId}"]`);
+    
+    if (!node) {
+        // Create new node
+        node = document.createElement('div');
+        node.classList.add('mindmap-node');
+        node.setAttribute('data-location', locationId);
+        node.innerHTML = `<span>${locationName}</span>`;
+        
+        // Position the node
+        node.style.left = `${x}%`;
+        node.style.top = `${y}%`;
+        
+        // Add event listener
+        node.addEventListener('click', function() {
+            // Deactivate all nodes
+            document.querySelectorAll('.mindmap-node').forEach(n => n.classList.remove('active'));
+            
+            // Activate this node
+            this.classList.add('active');
+            
+            // Show notification about the location (placeholder)
+            console.log(`You recall your experiences in ${locationName}.`);
+        });
+        
+        mindmapContainer.appendChild(node);
+    }
+    
+    // Show the node (make sure it's visible)
+    node.style.opacity = 1;
+}
