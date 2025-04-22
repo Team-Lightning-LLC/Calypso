@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Arena of Calypso</title>
+    <title>Calypso</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
@@ -14,6 +14,10 @@
         <div class="game-title">
             <div class="brand-icon"></div>
             <h1>The Arena of Calypso</h1>
+        </div>
+        <div class="view-toggle">
+            <button class="toggle-btn active" data-view="hud">HUD</button>
+            <button class="toggle-btn" data-view="mindmap">Mind Map</button>
         </div>
     </header>
 
@@ -29,32 +33,78 @@
             </div>
         </div>
 
-        <div class="side-panel">
-            <div class="character-stats">
+        <div class="side-panel" data-panel="hud">
+            <div class="character-panel">
                 <h3>Character</h3>
-                <div class="status-bar vitality-bar">
-                    <div class="bar-label">
-                        <span>Vitality</span>
-                        <span id="vitality-value">100/100</span>
+                <div class="character-profile">
+                    <div class="character-avatar">
+                        <div class="avatar-placeholder">
+                            <div class="avatar-glow"></div>
+                        </div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="vitality-fill"></div>
+                    <div class="character-stats">
+                        <div class="status-bar vitality-bar">
+                            <div class="bar-label">
+                                <span>Vitality</span>
+                                <span id="vitality-value">100/100</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="vitality-fill"></div>
+                            </div>
+                        </div>
+                        <div class="status-bar madness-bar">
+                            <div class="bar-label">
+                                <span>Madness</span>
+                                <span id="madness-value">0/100</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="madness-fill"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="status-bar madness-bar">
-                    <div class="bar-label">
-                        <span>Madness</span>
-                        <span id="madness-value">0/100</span>
+                <div class="equipment-grid">
+                    <div class="equipment-slot" data-slot="weapon">
+                        <div class="slot-label">Weapon</div>
+                        <div class="slot-content"></div>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="madness-fill"></div>
+                    <div class="equipment-slot" data-slot="ability">
+                        <div class="slot-label">Ability</div>
+                        <div class="slot-content"></div>
+                    </div>
+                    <div class="equipment-slot" data-slot="armor">
+                        <div class="slot-label">Armor</div>
+                        <div class="slot-content"></div>
+                    </div>
+                    <div class="equipment-slot" data-slot="ring">
+                        <div class="slot-label">Ring</div>
+                        <div class="slot-content"></div>
                     </div>
                 </div>
             </div>
             
-            <div class="location-info">
+            <div class="location-panel">
                 <h3>Location</h3>
-                <p id="current-location">Slums of Calypso</p>
+                <div class="location-image">
+                    <div class="location-placeholder">
+                        <div class="location-name" id="current-location">Slums of Calypso</div>
+                    </div>
+                </div>
+                <div class="location-lore">
+                    <p id="location-lore-text">A decaying labyrinth of makeshift shelters and crumbling structures. Fallen angels with clipped wings stumble through the filth while augmented demons prowl the shadows.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel mindmap-panel hidden" data-panel="mindmap">
+            <h3>Mind Map</h3>
+            <div class="mindmap-container">
+                <div class="mindmap-placeholder">
+                    <p>Your mental map of Calypso will develop as you explore...</p>
+                    <div class="mindmap-node active" data-location="slums">
+                        <span>Slums</span>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
