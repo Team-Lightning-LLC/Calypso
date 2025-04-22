@@ -307,3 +307,186 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 });
+// Add these functions to your existing JavaScript
+
+// Toggle between HUD and mind map views
+function setupToggleButtons() {
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    const panels = document.querySelectorAll('.side-panel');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Toggle active class on buttons
+            toggleButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Show appropriate panel
+            const view = button.getAttribute('data-view');
+            panels.forEach(panel => {
+                if (panel.getAttribute('data-panel') === view) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            });
+        });
+    });
+}
+
+// Update location with additional lore
+function updateLocationWithLore(location, baseLore, detailedLore = null) {
+    // Update location name
+    document.getElementById('current-location').textContent = location;
+    
+    // Update lore text with base information
+    document.getElementById('location-lore-text').textContent = baseLore;
+    
+    // Store detailed lore for later discovery
+    if (detailedLore) {
+        document.getElementById('location-lore-text').setAttribute('data-detailed-lore', detailedLore);
+    }
+    
+    // Add lore discovery button if detailed lore exists
+    const loreContainer = document.querySelector('.location-lore');
+    if (detailedLore && !document.querySelector('.discover-more-btn')) {
+        const discoverBtn = document.createElement('button');
+        discoverBtn.classList.add('discover-more-btn');
+        discoverBtn.textContent = 'Explore';
+        discoverBtn.addEventListener('click', expandLoreWithDetail);
+        loreContainer.appendChild(discoverBtn);
+    }
+}
+
+// Expand lore with detailed information
+function expandLoreWithDetail() {
+    const loreText = document.getElementById('location-lore-text');
+    const loreContainer = document.querySelector('.location-lore');
+    const detailedLore = loreText.getAttribute('data-detailed-lore');
+    
+    if (detailedLore) {
+        // Expand the container
+        loreContainer.classList.add('expanded');
+        
+        // Add the detailed lore to existing text
+        loreText.textContent += '\n\n' + detailedLore;
+        
+        // Remove the button
+        this.remove();
+        
+        // Show notification
+        showNotification('Insight Gained', 'You've discovered new details about this location.');
+    }
+}
+
+// Add item to equipment slot
+function addEquipment(slot, itemName, itemDescription) {
+    const equipmentSlot = document.querySelector(`.equipment-slot[data-slot="${slot}"]`);
+    if (equipmentSlot) {
+        const slotContent = equipmentSlot.querySelector('.slot-content');
+        
+        // Clear slot first
+        slotContent.innerHTML = '';
+        
+        // Create item
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('equipment-item');
+        itemElement.textContent = itemName;
+        itemElement.setAttribute('data-description', itemDescription);
+        
+        // Add hover effect
+        itemElement.addEventListener('mouseenter', function() {
+            showItemTooltip(this, itemName, itemDescription);
+        });
+        
+        itemElement.addEventListener('mouseleave', function() {
+            hideItemTooltip();
+        });
+        
+        slotContent.appendChild(itemElement);
+        
+        // Show notification
+        showNotification('Equipment Updated', `You've equipped ${itemName}.`);
+    }
+}
+
+// Show item tooltip
+function showItemTooltip(element, name, description) {
+    // Remove any existing tooltips
+    hideItemTooltip();
+    
+    // Create tooltip
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('item-tooltip');
+    tooltip.innerHTML = `
+        <div class="tooltip-title">${name}</div>
+        <div class="tooltip-description">${description}</div>
+    `;
+    
+    // Position tooltip
+    document.body.appendChild(tooltip);
+    
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = `${rect.left}px`;
+    tooltip.style.top = `${rect.bottom + 10}px`;
+    
+    // Add show class after a small delay to trigger transition
+    setTimeout(() => {
+        tooltip.classList.add('show');
+    }, 10);
+}
+
+// Hide item tooltip
+function hideItemTooltip() {
+    const existingTooltip = document.querySelector('.item-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+}
+
+// Update mind map with new location
+function updateMindMap(locationId, locationName, x, y) {
+    const mindmapContainer = document.querySelector('.mindmap-placeholder');
+    
+    // Check if node already exists
+    let node = document.querySelector(`.mindmap-node[data-location="${locationId}"]`);
+    
+    if (!node) {
+        // Create new node
+        node = document.createElement('div');
+        node.classList.add('mindmap-node');
+        node.setAttribute('data-location', locationId);
+        node.innerHTML = `<span>${locationName}</span>`;
+        
+        // Position the node
+        node.style.left = `${x}%`;
+        node.style.top = `${y}%`;
+        
+        // Add event listener
+        node.addEventListener('click', function() {
+            // Deactivate all nodes
+            document.querySelectorAll('.mindmap-node').forEach(n => n.classList.remove('active'));
+            
+            // Activate this node
+            this.classList.add('active');
+            
+            // Show notification about the location
+            showNotification('Mind Map', `You recall your experiences in ${locationName}.`);
+        });
+        
+        mindmapContainer.appendChild(node);
+    }
+    
+    // Show the node
+    node.style.opacity = 1;
+}
+
+// Call setup when document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setupToggleButtons();
+    
+    // Example usage in a real implementation:
+    // Add starting slums node to mind map
+    setTimeout(() => {
+        updateMindMap('slums', 'Slums', 50, 50);
+    }, 1000);
+});
